@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="modal fade" id="insertItem">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header fs-4 ">Add item</div>
+                <div class="modal-body">
+                    <form action="{% url 'home' %}" method="post">
+                      {% csrf_token %}
+                        <textarea name="task" id="" cols="60" rows="5"></textarea>
+                        <input type="submit" value="ADD" name="submit" class="btn btn-dark w-100">
+                    </form>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container mt-4">
+        
+        <div class="card col-lg-10 mx-auto shadow-lg">
+            <div class="card-header fs-3">To-Do Lists Here...
+                <button type="button" class="btn-dark float-end rounded-pill fs-5 px-3 py-1" data-bs-target="#insertItem" data-bs-toggle="modal">Add Item</button>
+            </div>
+            <div class="card-body">
+                <div class="d-flex">
+                    <a class="btn {% if request.path == "/" %}  btn-success {% else%} btn-light {%endif%} rounded-pill ms-2" href="{% url 'home' %}" >All Lists</a>
+                    <a class="btn  {% if request.path == "/task-active/" %}  btn-primary {% else%} btn-light {%endif%} rounded-pill ms-2" href="{% url 'activeTask' %}">Active Lists</a>
+                    <a class="btn  {% if request.path == "/task-inactive/" %}  btn-danger {% else%} btn-light {%endif%} rounded-pill ms-2" href="{% url 'inActiveTask' %}">Inactive Lists</a> 
+                </div>
+                <table class="table mt-4">
+                    <tr>
+                        <th>Action Switch</th>
+                        <th>ID</th>
+                        <th>To-Do List</th>
+                        <th>Active</th>
+                        <th>Other Action</th>
+                    </tr>
+                     {% for i in todo %}
+                       
+                        <tr class="{% if i.status == 1 %} bg-light {%endif%} ">
+                              {% if i.status == 0 %}
+                                <td><a href="{% url 'updateTask' i.id  %}" class="btn p-0 fs-4 ps-4"><i class="bi bi-toggle-off"></i></a></td>
+                                {% else %}
+                                <td><a href="{% url 'updateTask' i.id  %}" class="btn p-0 fs-4 ps-4"><i class="bi bi-toggle-on"></i></a></td>
+                                {% endif %}
+                            <td class="fs-5 fw-light">{{forloop.counter}}</td>
+                            <td class="fs-5 fw-light {% if i.status == 1 %} text-decoration-line-through text-muted {%endif%}">{{i.task}}</td>
+                              {% if i.status == 0 %}
+                                <td><span class="rounded-pill badge bg-primary">Incomplete</span></td>
+                                {% else %}
+                            
+                                <td><span class="rounded-pill badge bg-danger">Completed</span></td>
+                                {% endif %}
+                              <td><a href="{% url 'deleteTask' i.id %}" class="btn p-0 fs-5 "><i class="bi bi-trash "></i></div></a>
+                             </td>
+
+                        </tr>
+                       
+                        {%  endfor %}
+                </table>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock  %}
