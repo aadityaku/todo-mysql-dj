@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
 class Home(LoginRequiredMixin,View):
-    login_url = 'login-user/'
+    login_url = '/login-user/'
     def get(self,request,id=None):
         if id !=None:
             to=Todo.objects.get(pk=id)
@@ -31,21 +31,19 @@ class Home(LoginRequiredMixin,View):
         to.save()
         return redirect("home")
 
-
-
 class DeleteTask(LoginRequiredMixin,View):
-    login_url='login-user/'
+    login_url='/login-user/'
     def get(self,r,id):
         to=Todo.objects.get(pk=id,user=r.user)
         to.delete()
         return redirect("home")
 
-@login_required
+@login_required(login_url="/login-user/")
 def active(r):
     to=Todo.objects.filter(user=r.user,status=False)
     return render(r,"home.html",{"todo":to})
 
-@login_required
+@login_required(login_url="/login-user/")
 def inActive(r):
     to=Todo.objects.filter(user=r.user,status=True)
     return render(r,"home.html",{"todo":to})
